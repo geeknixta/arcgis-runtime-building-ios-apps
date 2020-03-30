@@ -15,7 +15,12 @@ Source code for the `ArcGIS Runtime SDKs: Building iOS Apps` session from the 20
 * Learn about geometry builders ([`AGSGeometry.toBuilder()`](https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_geometry.html#a0a5dd7e9f36c1f05971cca3f6b68d190), [`AGSGeometryBuilder.toGeometry()`](https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_geometry_builder.html#a4b108ac0cfce067e27d3e1bd55219b57)).
 * Animate the map view's viewpoint.
 
-Edit the [AGSCredential.swift](./Runtime%20101/Extensions/AGSCredential.swift) file to add a username and password for getting directions.
+## Instructions
+Download and install the [ArcGIS Runtime SDK for iOS](https://developers.arcgis.com/ios/).
+Open the project in Xcode 11 and run it.
+
+To get directions, you need an ArcGIS login. You can use a [free ArcGIS for Developer's account](https://developers.arcgis.com/sign-up/), or an existing ArcGIS Online account. Then edit the [AGSCredential.swift](./Runtime%20101/Extensions/AGSCredential.swift) file to add a username and password.
+
 
 ## Requirements
 * [ArcGIS Runtime SDK for iOS](https://developers.arcgis.com/ios/)
