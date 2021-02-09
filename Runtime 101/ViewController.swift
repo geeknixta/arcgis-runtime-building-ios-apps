@@ -20,8 +20,10 @@ class ViewController: UIViewController {
     
     // An AGSLocatorTask allows us to go geocoding/reverse geocoding, etc. Here
     // we connect to our hosted, free, World Geocoder service.
-    let locatorTask = AGSLocatorTask(url: URL(string: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer")!)
-    
+    let locatorTask = AGSLocatorTask(
+        url: URL(string: "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer")!
+    )
+
     // We want somewhere to show geocode result location. We'll show it in an
     // AGSGraphicsOverlay on the AGSMapView.
     let locationOverlay = AGSGraphicsOverlay()
@@ -32,12 +34,10 @@ class ViewController: UIViewController {
     // obtained via OAuth or, as in this case, by using a simple username and
     // password. However it's obtained, it's represented in Runtime as an
     // AGSCredential.
-    let routeTask: AGSRouteTask = {
-        let routeTask = AGSRouteTask(url: URL(string: "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!)
-        routeTask.credential = .demo
-        return routeTask
-    }()
-    
+    let routeTask = AGSRouteTask(
+        url: URL(string: "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World")!
+    )
+
     // We want somewhere to show route results. As with geocode results, we'll
     // show them in an AGSGraphicsOverlay on the AGSMapView.
     // However, in this case we'll tell the overlay how to display graphics
@@ -61,8 +61,8 @@ class ViewController: UIViewController {
     }()
     
     func makeMap() -> AGSMap {
-        let map = AGSMap(basemapType: .navigationVector, latitude: 33.82496, longitude: -116.53862, levelOfDetail: 15)
-        
+        let map = AGSMap(basemapStyle: .arcGISNavigation)
+
         // Add some data to the map from a hosted feature service. A Feature
         // is a geographic data item from some data table. The Feature
         // could be a point, line or polygon. The source data table could be
@@ -90,7 +90,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // You might more typically set your API key in the AppDelegate
+        AGSArcGISRuntimeEnvironment.apiKey = "YOUR-API-KEY"
+        
         mapView.map = makeMap()
+        
+        mapView.setViewpoint(
+            AGSViewpoint(latitude: 33.82496, longitude: -116.53862, scale: 18055.954822)
+        )
         
         // Add the graphics overlay for geocode result location to the map view.
         mapView.graphicsOverlays.add(locationOverlay)
@@ -124,75 +131,79 @@ extension ViewController: AGSCalloutDelegate {
         // once, this will just return and not re-fetch them; i.e., the
         // parameters are cached.
         routeTask.defaultRouteParameters { [weak self] (routeParameters, error) in
-            guard let self = self else {
+            guard let self = self else { return }
+            
+            guard let routeParameters = routeParameters else {
+                if let error = error {
+                    self.showAlert(title: "Route Parameters Error", message: error.localizedDescription)
+                }
                 return
             }
             
-            if let routeParameters = routeParameters {
-                if let mapLocation = self.mapView.locationDisplay.mapLocation {
-                    // Ensure the geometry we get back is projected for the
-                    // current map display. In this case, it doesn't matter too
-                    // much - Runtime will easily handle the projection on the
-                    // fly, but it's good practice to ask a service to give you
-                    // back geometry in a projection that will allow the client
-                    // to just show it and not have to do work each time.
-                    routeParameters.outputSpatialReference = self.mapView.spatialReference
+            guard let mapLocation = self.mapView.locationDisplay.mapLocation else {
+                self.showAlert(title: "Error", message: "Unable to get device location.")
+                return
+            }
 
-                    // Let's get detailed turn-by-turn directions returned as
-                    // well as the overall route summary.
-                    routeParameters.returnDirections = true
+            // Ensure the geometry we get back is projected for the
+            // current map display. In this case, it doesn't matter too
+            // much - Runtime will easily handle the projection on the
+            // fly, but it's good practice to ask a service to give you
+            // back geometry in a projection that will allow the client
+            // to just show it and not have to do work each time.
+            routeParameters.outputSpatialReference = self.mapView.spatialReference
 
-                    // Set up stops (just 2 in this case, but AGSRouteTask can
-                    // handle many). By assigning names, the turn-by-turn
-                    // directions will look nicer.
-                    let start = AGSStop(point: mapLocation)
-                    start.name = "My location"
-                    let end = AGSStop(point: featureLocation)
-                    end.name = (feature.attributes["Name"] as? String) ?? "My destination"
-                    routeParameters.setStops([start, end])
-                    
-                    // Now simply call "solveRoute", and handle the response in
-                    // the callback block.
-                    self.routeTask.solveRoute(with: routeParameters) { [weak self] (routeResult, error) in
-                        guard let self = self else {
-                            return
-                        }
-                        
-                        if let route = routeResult?.routes.first, let routeGeometry = route.routeGeometry {
-                            // Note we don't set a symbol on the graphic this
-                            // time, as the route overlay has a renderer defined
-                            // on it.
-                            let routeGraphic = AGSGraphic(geometry: routeGeometry, symbol: nil)
-                            self.routeOverlay.graphics.setArray([routeGraphic])
-                            
-                            // Zoom the map to the route result geometry. Here
-                            // we expand a little so the route doesn't run right
-                            // up against the edge of the map view.
-                            //
-                            // Geometries are immutable. This is for performance
-                            // reasons, particularly when a geometry is reused
-                            // in multiple places. Instead, to modify a
-                            // geometry, you derive a Builder from it, do the
-                            // modifications with the builder, and then derive
-                            // the modified geometry.
-                            let routeExtent = routeGeometry.extent
-                                .toBuilder()
-                                .expand(byFactor: 1.4)
-                                .toGeometry()
-                            self.mapView.setViewpointGeometry(routeExtent, completion: nil)
+            // Let's get detailed turn-by-turn directions returned as
+            // well as the overall route summary.
+            routeParameters.returnDirections = true
 
-                            // Just quickly print out the turn-by-turn
-                            // directions.
-                            route.directionManeuvers.forEach { print($0.directionText) }
-                        } else {
-                            self.showAlert(title: "Error solving route", message: error!.localizedDescription)
-                        }
-                    }
-                } else {
-                    self.showAlert(title: "Error", message: "Unable to get device location.")
+            // Set up stops (just 2 in this case, but AGSRouteTask can
+            // handle many). By assigning names, the turn-by-turn
+            // directions will look nicer.
+            let start = AGSStop(point: mapLocation)
+            start.name = "your location"
+            let end = AGSStop(point: featureLocation)
+            end.name = (feature.attributes["Name"] as? String) ?? "your destination"
+            routeParameters.setStops([start, end])
+            
+            // Now simply call "solveRoute", and handle the response in
+            // the callback block.
+            self.routeTask.solveRoute(with: routeParameters) { [weak self] (routeResult, error) in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    self.showAlert(title: "Error solving route", message: error.localizedDescription)
+                    return
                 }
-            } else if let error = error {
-                self.showAlert(title: "Route Parameters Error", message: error.localizedDescription)
+                
+                guard let route = routeResult?.routes.first,
+                      let routeGeometry = route.routeGeometry else { return }
+                
+                // Note we don't set a symbol on the graphic this
+                // time, as the route overlay has a renderer defined
+                // on it.
+                let routeGraphic = AGSGraphic(geometry: routeGeometry, symbol: nil)
+                self.routeOverlay.graphics.setArray([routeGraphic])
+                
+                // Zoom the map to the route result geometry. Here
+                // we expand a little so the route doesn't run right
+                // up against the edge of the map view.
+                //
+                // Geometries are immutable. This is for performance
+                // reasons, particularly when a geometry is reused
+                // in multiple places. Instead, to modify a
+                // geometry, you derive a Builder from it, do the
+                // modifications with the builder, and then derive
+                // the modified geometry.
+                let routeExtent = routeGeometry.extent
+                    .toBuilder()
+                    .expand(byFactor: 1.4)
+                    .toGeometry()
+                self.mapView.setViewpointGeometry(routeExtent, completion: nil)
+
+                // Just quickly print out the turn-by-turn
+                // directions.
+                route.directionManeuvers.forEach { print($0.directionText) }
             }
         }
         
@@ -203,18 +214,18 @@ extension ViewController: AGSCalloutDelegate {
 extension ViewController: AGSGeoViewTouchDelegate {
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
         mapView.identifyLayers(atScreenPoint: screenPoint, tolerance: 10, returnPopupsOnly: false) { [weak self] (results, error) in
-            guard let self = self else {
+            guard let self = self else { return }
+            
+            if let error = error {
+                self.showAlert(title: "Error Identifying", message: error.localizedDescription)
                 return
             }
             
-            if let result = results?.first,
-                let feature = result.geoElements.first as? AGSFeature {
-                self.mapView.callout.title = feature.attributes["Name"] as? String
-                self.mapView.callout.detail = feature.attributes["Text_for_Short_Desc_field"] as? String
-                self.mapView.callout.show(for: feature, tapLocation: mapPoint, animated: true)
-            } else if let error = error {
-                self.showAlert(title: "Error Identifying", message: error.localizedDescription)
-            }
+            guard let feature = results?.first?.geoElements.first as? AGSFeature else { return }
+
+            self.mapView.callout.title = feature.attributes["Name"] as? String
+            self.mapView.callout.detail = feature.attributes["Text_for_Short_Desc_field"] as? String
+            self.mapView.callout.show(for: feature, tapLocation: mapPoint, animated: true)
         }
     }
 }

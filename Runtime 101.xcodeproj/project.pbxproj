@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,10 +13,9 @@
 		4CC741CB2410683D001D13E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CC741C92410683D001D13E0 /* Main.storyboard */; };
 		4CC741CD24106843001D13E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CC741CC24106843001D13E0 /* Assets.xcassets */; };
 		4CC741D024106843001D13E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CC741CE24106843001D13E0 /* LaunchScreen.storyboard */; };
-		4CC741DD2410A7BA001D13E0 /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC741D8241076CC001D13E0 /* ArcGIS.framework */; };
-		4CC741DE2410A7BA001D13E0 /* ArcGIS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC741D8241076CC001D13E0 /* ArcGIS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		4CC741E22410AE4C001D13E0 /* AGSCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC741E12410AE4C001D13E0 /* AGSCredential.swift */; };
 		4CC741E42410B101001D13E0 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC741E32410B101001D13E0 /* UIViewController.swift */; };
+		D9048A0725D30FEC00683C54 /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9048A0625D30FEB00683C54 /* ArcGIS.xcframework */; };
+		D9048A0825D30FEC00683C54 /* ArcGIS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D9048A0625D30FEB00683C54 /* ArcGIS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +25,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4CC741DE2410A7BA001D13E0 /* ArcGIS.framework in Embed Frameworks */,
+				D9048A0825D30FEC00683C54 /* ArcGIS.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -42,9 +41,8 @@
 		4CC741CC24106843001D13E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4CC741CF24106843001D13E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4CC741D124106843001D13E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4CC741D8241076CC001D13E0 /* ArcGIS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArcGIS.framework; path = "$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic/ArcGIS.framework"; sourceTree = "<group>"; };
-		4CC741E12410AE4C001D13E0 /* AGSCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AGSCredential.swift; sourceTree = "<group>"; };
 		4CC741E32410B101001D13E0 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		D9048A0625D30FEB00683C54 /* ArcGIS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ArcGIS.xcframework; path = ../../../../../../../Library/SDKs/ArcGIS/Frameworks/ArcGIS.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC741DD2410A7BA001D13E0 /* ArcGIS.framework in Frameworks */,
+				D9048A0725D30FEC00683C54 /* ArcGIS.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,7 +92,7 @@
 		4CC741D7241076AF001D13E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4CC741D8241076CC001D13E0 /* ArcGIS.framework */,
+				D9048A0625D30FEB00683C54 /* ArcGIS.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -102,7 +100,6 @@
 		4CC741E02410AE26001D13E0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				4CC741E12410AE4C001D13E0 /* AGSCredential.swift */,
 				4CC741E32410B101001D13E0 /* UIViewController.swift */,
 			);
 			path = Extensions;
@@ -136,7 +133,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = Esri;
 				TargetAttributes = {
 					4CC741BF2410683D001D13E0 = {
@@ -180,7 +177,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC741E22410AE4C001D13E0 /* AGSCredential.swift in Sources */,
 				4CC741C82410683D001D13E0 /* ViewController.swift in Sources */,
 				4CC741C42410683D001D13E0 /* AppDelegate.swift in Sources */,
 				4CC741C62410683D001D13E0 /* SceneDelegate.swift in Sources */,
@@ -236,6 +232,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -296,6 +293,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -329,10 +327,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Runtime 101/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -350,10 +345,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Runtime 101/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
